@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
     QWidget,
@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
     QFileDialog,
 )
 
-from PyQt5.QtCore import Qt, QTime
+from PyQt6.QtCore import Qt, QTime
 
 from opencv_frames import get_video_info, save_frames
 
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
 
     def init_ui(self):
-        align_center = Qt.AlignHCenter | Qt.AlignVCenter
+        align_center = Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
 
         # open video
         self.open_video_btn = QPushButton("Open video")
@@ -63,10 +63,10 @@ class MainWindow(QMainWindow):
         self.start_btn = QPushButton("Start")
         self.start_btn.clicked.connect(self.on_start_clicked)
         self.progress_bar = QProgressBar()
-        self.progress_label = QLabel()
-        self.progress_label.setAlignment(align_center)
 
         # quit
+        self.progress_label = QLabel()
+        self.progress_label.setAlignment(align_center)
         self.quit_btn = QPushButton("Quit")
         self.quit_btn.clicked.connect(self.on_quit_clicked)
 
@@ -89,9 +89,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.to_tedit, 3, 3)
 
         layout.addWidget(self.start_btn, 4, 0)
-        layout.addWidget(self.progress_bar, 4, 1, 1, 2)
-        layout.addWidget(self.progress_label, 4, 3)
+        layout.addWidget(self.progress_bar, 4, 1, 1, 3)
 
+        layout.addWidget(self.progress_label, 5, 1)
         layout.addWidget(self.quit_btn, 5, 3)
 
         widget = QWidget()
@@ -111,6 +111,7 @@ class MainWindow(QMainWindow):
             ms = (duration * 1000)  % 1000
             max_time = QTime(h, m, s, ms)
             self.from_tedit.setMaximumTime(max_time)
+            self.from_tedit.setTime(QTime(0,0))
             self.to_tedit.setMaximumTime(max_time)
             self.to_tedit.setTime(max_time)
             if not self.open_folder_edit.text():
@@ -132,8 +133,8 @@ class MainWindow(QMainWindow):
             'file_name': self.open_video_edit.text(),
             'folder_name': self.open_folder_edit.text(),
             'step': self.step_sbox.value(),
-            'from': QTime(0, 0).msecsTo(self.from_tedit.time()),
-            'to': QTime(0, 0).msecsTo(self.to_tedit.time()),
+            'from': QTime(0,0).msecsTo(self.from_tedit.time()),
+            'to': QTime(0,0).msecsTo(self.to_tedit.time()),
         }
         if not save_frames(param=param, set_progress=self.set_progress):
             self.progress_label.setText("Error")

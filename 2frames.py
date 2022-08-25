@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QIcon
 
 from main_window import MainWindow
 
@@ -12,4 +12,4 @@ if __name__ == "__main__":
     window.setMinimumSize(640, 320)
     window.show()
 
-    app.exec_()
+    sys.exit(app.exec())
