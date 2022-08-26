@@ -27,7 +27,8 @@ class MainWindow(QMainWindow):
 
 
     def init_ui(self):
-        align_center = Qt.AlignHCenter | Qt.AlignVCenter
+        align_center = Qt.AlignmentFlag.AlignHCenter \
+            | Qt.AlignmentFlag.AlignVCenter
 
         # open video
         self.open_video_btn = QPushButton("Open video")
@@ -89,9 +90,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.to_tedit, 3, 3)
 
         layout.addWidget(self.start_btn, 4, 0)
-        layout.addWidget(self.progress_bar, 4, 1, 1, 2)
-        layout.addWidget(self.progress_label, 4, 3)
+        layout.addWidget(self.progress_bar, 4, 1, 1, 3)
 
+        layout.addWidget(self.progress_label, 5, 1)
         layout.addWidget(self.quit_btn, 5, 3)
 
         widget = QWidget()
@@ -111,6 +112,7 @@ class MainWindow(QMainWindow):
             ms = (duration * 1000)  % 1000
             max_time = QTime(h, m, s, ms)
             self.from_tedit.setMaximumTime(max_time)
+            self.from_tedit.setTime(QTime(0,0))
             self.to_tedit.setMaximumTime(max_time)
             self.to_tedit.setTime(max_time)
             if not self.open_folder_edit.text():

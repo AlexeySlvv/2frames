@@ -52,18 +52,20 @@ def save_frames(param: dict, set_progress=None) -> bool:
         for i in range(0, frame_step):
             success, image = cap.read()
             if not success:
-                break
+                cv2.destroyAllWindows()
+                return False
             frame_no += 1
-            if set_progress:
-                set_progress(frame_no)
 
         if frame_no < start_frame:
             continue
         else:
             if not success:
-                break
+                cv2.destroyAllWindows()
+                return False
             iname = f'{folder_name}/{file_basename}_frame_{frame_no}.jpg'
             cv2.imwrite(iname, image)
+            if set_progress:
+                set_progress(frame_no)
         if frame_no > end_frame:
             break
 
