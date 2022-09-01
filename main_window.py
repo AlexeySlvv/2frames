@@ -1,5 +1,6 @@
 import os
 from os import path
+from pathlib import Path
 
 from PyQt5.QtWidgets import (
     QApplication,
@@ -119,6 +120,10 @@ class MainWindow(QMainWindow):
         filter = "Videos (*.mkv *.mp4 *.avi *.webm)"
         filename, _ = QFileDialog.getOpenFileName(self, filter=filter)
         if filename:
+            dirname = path.dirname(filename)
+            onlyname = path.splitext(filename)[0]
+            self._set_folder_path(folder_path=path.join(dirname, onlyname))
+            # from - to
             self.open_video_ledit.setText(filename)
             frame_count, duration = get_video_info(filename)
             self.progress_bar.setMaximum(frame_count)
@@ -130,23 +135,23 @@ class MainWindow(QMainWindow):
             self.from_tedit.setTime(QTime(0,0))
             self.to_tedit.setMaximumTime(max_time)
             self.to_tedit.setTime(max_time)
-            if not self.open_folder_ledit.text():
-                dirname = path.dirname(filename)
-                onlyname = path.splitext(filename)[0]
-                self.open_folder_ledit.setText(path.join(dirname, onlyname))
 
+    def _set_folder_path(self, folder_path: str()):
+        if folder_path:
+            self.open_folder_ledit.setText(folder_path)
+        
     def on_open_folder_clicked(self):
         directory = self.open_folder_ledit.text() if self.open_folder_ledit.text() else os.getcwd()
         folder_path = QFileDialog.getExistingDirectory(self, directory=directory)
-        if folder_path:
-            self.open_folder_ledit.setText(folder_path)
+        self._set_folder_path(folder_path=folder_path)
 
     def set_progress(self, value: int):
-        self.progress_label.setText(f"frame {value}")
+        self.progress_label.setText(f"frame {value+1}")
         self.progress_bar.setValue(value)
         QApplication.processEvents()
 
     def on_start_clicked(self):
+        Path(self.open_folder_ledit.text()).mkdir(parents=True, exist_ok=True)
         param = {
             'file_name': self.open_video_ledit.text(),
             'folder_name': self.open_folder_ledit.text(),
@@ -155,7 +160,7 @@ class MainWindow(QMainWindow):
             'to': QTime(0, 0).msecsTo(self.to_tedit.time()),
         }
         if not save_frames(param=param, set_progress=self.set_progress):
-            self.progress_label.setText("Error")
+            self.progress_label.setText("Error saving frames")
         else:
             self.progress_label.setText("Done")
 

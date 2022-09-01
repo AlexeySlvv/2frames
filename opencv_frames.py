@@ -1,4 +1,4 @@
-from os.path import basename
+import os
 import cv2
 
 
@@ -30,9 +30,8 @@ def save_frames(param: dict, set_progress=None) -> bool:
       * from: from time (msec)
       * to: to time (msec)
     '''
-    file_name = param.get('file_name')
-
-    folder_name = param.get('folder_name')
+    file_name = param.get('file_name', "")
+    folder_name = param.get('folder_name', "")
     if not file_name or not folder_name:
         return False
 
@@ -40,7 +39,6 @@ def save_frames(param: dict, set_progress=None) -> bool:
     from_ms = int(param.get('from'))
     to_msec = int(param.get('to'))
 
-    file_basename = basename(file_name)
     cap = cv2.VideoCapture(file_name)
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -52,18 +50,23 @@ def save_frames(param: dict, set_progress=None) -> bool:
         for i in range(0, frame_step):
             success, image = cap.read()
             if not success:
-                cv2.destroyAllWindows()
-                return False
+                break
             frame_no += 1
 
         if frame_no < start_frame:
             continue
         else:
             if not success:
-                cv2.destroyAllWindows()
-                return False
-            iname = f'{folder_name}/{file_basename}_frame_{frame_no}.jpg'
-            cv2.imwrite(iname, image)
+                break
+            image_name = f'frame_{frame_no+1}.png'
+            
+            # this is the strange way to save an image 
+            # to file with special characters in its name
+            current_path = os.getcwd()
+            os.chdir(folder_name)
+            cv2.imwrite(image_name, image)
+            os.chdir(current_path)
+
             if set_progress:
                 set_progress(frame_no)
         if frame_no > end_frame:
