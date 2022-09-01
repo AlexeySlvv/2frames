@@ -1,2 +1,13 @@
 /.vscode
 /__pycache__
+
+# pyinstaller
+/build
+/dist
+2frames.spec
+
+# videos
+*.mp4
+*.webm
+*.mkv
+*.avi
