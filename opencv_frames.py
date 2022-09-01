@@ -52,6 +52,8 @@ def save_frames(param: dict, set_progress=None) -> bool:
             if not success:
                 break
             frame_no += 1
+            if set_progress:
+                set_progress(frame_no)
 
         if frame_no < start_frame:
             continue
@@ -67,8 +69,6 @@ def save_frames(param: dict, set_progress=None) -> bool:
             cv2.imwrite(image_name, image)
             os.chdir(current_path)
 
-            if set_progress:
-                set_progress(frame_no)
         if frame_no > end_frame:
             break
 
