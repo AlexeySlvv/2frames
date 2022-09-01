@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     window = MainWindow()
     window.setWindowIcon(QIcon('icon.ico'))
-    window.setMinimumSize(640, 320)
+    window.setMinimumSize(800, 320)
     window.show()
 
     app.exec_()
